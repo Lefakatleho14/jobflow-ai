@@ -1,0 +1,14 @@
+{
+  "title": "  Junior   Software Developer ",
+  "company": "Acme Holdings, Inc.",
+  "location": "Johannesburg, Gauteng",
+  "remote_status": "Work from Home",
+  "description": "We are looking for a junior developer.\r\n\r\n\r\n\r\nMust know Python and FastAPI.\n\n\n\nBonus: Docker.",
+  "url": "https://example.com/jobs/12345",
+  "source": "manual",
+  "external_id": "acme-12345",
+  "date_posted": "2026-10-01T09:00:00Z",
+  "salary_min": 250000,
+  "salary_max": 350000,
+  "salary_currency": "zar"
+}
