@@ -1,0 +1,3 @@
+New-Item data\.gitkeep -ItemType File
+New-Item uploads\.gitkeep -ItemType File
+New-Item workflows\n8n\.gitkeep -ItemType File
