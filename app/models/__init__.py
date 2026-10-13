@@ -2,6 +2,7 @@
 Re-export every ORM model and enum for convenient imports.
 """
 
+from app.models.feed_source import FeedSource
 from app.models.application import Application
 from app.models.automation import AutomationRun
 from app.models.enums import (
@@ -37,4 +38,5 @@ __all__ = [
     "Skill",
     "SkillCategory",
     "User",
+    "FeedSource",
 ]
