@@ -18,6 +18,7 @@ from app.models.enums import (
 from app.models.job import Job, JobMatch, JobRequirement
 from app.models.notification import Notification
 from app.models.user import Profile, Project, Skill, User
+from app.models.job_alias import JobAlias
 
 __all__ = [
     "Application",
@@ -39,4 +40,5 @@ __all__ = [
     "SkillCategory",
     "User",
     "FeedSource",
+    "JobAlias",
 ]

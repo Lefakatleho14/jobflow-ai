@@ -3,12 +3,17 @@ CLI: import a single job from a JSON payload.
 
 Usage:
     python scripts/import_job.py path/to/job.json
-    python scripts/import_job.py --inline '{"title": "...", "company": "..."}'
+    python scripts/import_job.py --inline '{\"title\": \"...\", \"company\": \"...\"}'
 
 Exit codes:
-    0  success (created or duplicate found — both are OK)
+    0  success (created, duplicate, or fuzzy alias)
     1  validation error
     2  other error (DB, IO, etc.)
+
+The output now distinguishes:
+    CREATED       — new job inserted
+    DUPLICATE     — deterministic match (source+external_id, url, or content_hash)
+    FUZZY ALIAS   — matched an existing job by similarity; created JobAlias
 """
 
 from __future__ import annotations
@@ -37,6 +42,14 @@ def _load_payload(args: argparse.Namespace) -> dict:
     raise ValueError("Provide either a JSON file path or --inline JSON")
 
 
+def _classify(result) -> str:
+    if result.created:
+        return "CREATED"
+    if result.reason == "fuzzy_alias":
+        return f"FUZZY ALIAS (sim={result.alias_similarity:.4f})"
+    return "DUPLICATE"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Import a single job into JobFlow AI")
     parser.add_argument("path", nargs="?", help="Path to a JSON file")
@@ -53,17 +66,21 @@ def main() -> int:
         with session_scope() as session:
             result = JobImportService(session).import_job(payload)
             job = result.job
-            status = "CREATED" if result.created else "DUPLICATE"
+            status = _classify(result)
+
             print("=" * 56)
             print(f" {status}")
             print("=" * 56)
-            print(f"  id        : {job.id}")
-            print(f"  title     : {job.title}")
-            print(f"  company   : {job.company}")
-            print(f"  location  : {job.location}")
-            print(f"  source    : {job.source}")
-            print(f"  hash      : {job.content_hash}")
-            print(f"  status    : {job.status}")
+            print(f"  id         : {job.id}")
+            print(f"  title      : {job.title}")
+            print(f"  company    : {job.company}")
+            print(f"  location   : {job.location}")
+            print(f"  source     : {job.source}")
+            print(f"  hash       : {job.content_hash}")
+            print(f"  status     : {job.status}")
+            if result.reason == "fuzzy_alias":
+                print(f"  reason     : {result.reason}")
+                print(f"  similarity : {result.alias_similarity:.4f}")
         return 0
     except ValueError as exc:
         print(f"[FAIL] Validation error: {exc}")

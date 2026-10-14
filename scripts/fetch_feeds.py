@@ -4,7 +4,9 @@ CLI: run a fetch cycle over all enabled feeds.
 Usage:
     python scripts/fetch_feeds.py
     python scripts/fetch_feeds.py --feed <feed_id>
-    python scripts/fetch_feeds.py --seed-demo   (add the two seed feeds if missing)
+    python scripts/fetch_feeds.py --seed-demo
+
+Reports both deterministic duplicates and fuzzy aliases separately.
 """
 
 from __future__ import annotations
@@ -65,22 +67,45 @@ def _print_report(report) -> None:
     print(f"  discovered      : {report.discovered}")
     print(f"  created         : {report.created}")
     print(f"  duplicates      : {report.duplicates}")
+    print(f"  fuzzy_aliases   : {getattr(report, 'fuzzy_aliases', 0)}")
     print(f"  errors          : {report.errors}")
     print("-" * 60)
     for r in report.results:
         marker = "OK " if r.status == "ok" else ("EMP" if r.status == "empty" else "ERR")
         print(f"  [{marker}] {r.feed_name}")
         print(f"         url     : {r.feed_url}")
-        print(f"         found   : {r.discovered}  created: {r.created}  dup: {r.duplicates}  err: {r.errors}")
+        print(
+            f"         found   : {r.discovered}  created: {r.created}  "
+            f"dup: {r.duplicates}  fuzzy: {r.fuzzy_aliases}  err: {r.errors}"
+        )
         if r.error_message:
             print(f"         error   : {r.error_message}")
     print("=" * 60)
 
 
+def _print_single_result(result) -> None:
+    """Reuse the report printer for a one-feed run."""
+    class _R:
+        pass
+
+    report = _R()
+    report.feeds_processed = 1
+    report.feeds_ok = 1 if result.status != "error" else 0
+    report.feeds_failed = 1 if result.status == "error" else 0
+    report.discovered = result.discovered
+    report.created = result.created
+    report.duplicates = result.duplicates
+    report.fuzzy_aliases = result.fuzzy_aliases
+    report.errors = result.errors
+    report.results = [result]
+    _print_report(report)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Fetch jobs from enabled feeds")
     parser.add_argument("--feed", help="Fetch only a specific feed id")
-    parser.add_argument("--seed-demo", action="store_true", help="Add demo feeds if missing, then exit")
+    parser.add_argument("--seed-demo", action="store_true",
+                        help="Add demo feeds if missing, then exit")
     args = parser.parse_args()
 
     if args.seed_demo:
@@ -94,27 +119,11 @@ def main() -> int:
                 print(f"[FAIL] No such feed: {args.feed}")
                 return 1
             result = fetch_one_feed(session, feed)
-
-        # Wrap the single result to reuse report printer
-        class _R:
-            pass
-        report = _R()
-        report.feeds_processed = 1
-        report.feeds_ok = 1 if result.status != "error" else 0
-        report.feeds_failed = 1 if result.status == "error" else 0
-        report.discovered = result.discovered
-        report.created = result.created
-        report.duplicates = result.duplicates
-        report.errors = result.errors
-        report.results = [result]
-        _print_report(report)
+        _print_single_result(result)
         return 0
 
     with session_scope() as session:
         report = fetch_all_feeds(session)
-        # `session_scope` commits after the block; because fetch_all_feeds
-        # only flushes, the final commit here persists everything at once.
-        # For per-feed commit granularity, see fetch_one_feed + loop.
 
     _print_report(report)
     return 0

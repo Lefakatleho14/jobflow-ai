@@ -30,10 +30,11 @@ class FeedFetchResult:
     feed_name: str
     feed_url: str
     status: str                    # "ok" | "error" | "empty"
-    discovered: int = 0            # entries returned by the source
-    created: int = 0               # newly inserted jobs
-    duplicates: int = 0            # entries recognised as duplicates
-    errors: int = 0                # per-entry import errors
+    discovered: int = 0
+    created: int = 0
+    duplicates: int = 0
+    fuzzy_aliases: int = 0         # NEW
+    errors: int = 0
     error_message: str | None = None
 
 
@@ -45,6 +46,7 @@ class FetchReport:
     discovered: int = 0
     created: int = 0
     duplicates: int = 0
+    fuzzy_aliases: int = 0         # NEW
     errors: int = 0
     results: list[FeedFetchResult] = field(default_factory=list)
 
@@ -94,6 +96,8 @@ def fetch_one_feed(session: Session, feed: FeedSource) -> FeedFetchResult:
             import_result = service.import_job(payload)
             if import_result.created:
                 result.created += 1
+            elif import_result.reason == "fuzzy_alias":
+                result.fuzzy_aliases += 1
             else:
                 result.duplicates += 1
         except Exception as exc:
@@ -122,6 +126,7 @@ def fetch_all_feeds(session: Session) -> FetchReport:
         report.created += result.created
         report.duplicates += result.duplicates
         report.errors += result.errors
+        report.fuzzy_aliases += result.fuzzy_aliases
         if result.status == "error":
             report.feeds_failed += 1
         else:

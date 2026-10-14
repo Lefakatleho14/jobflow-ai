@@ -66,6 +66,10 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         back_populates="job", uselist=False, cascade="all, delete-orphan"
     )
 
+    aliases: Mapped[list["JobAlias"]] = relationship(
+        back_populates="job", cascade="all, delete-orphan"
+    )
+
 
 class JobRequirement(Base, UUIDPrimaryKeyMixin):
     __tablename__ = "job_requirements"
