@@ -1,0 +1,51 @@
+{
+  "name": "Your Name",
+  "education": "University of Example",
+  "degree": "BSc Computer Science",
+  "languages": ["Python", "Java", "JavaScript"],
+  "frameworks": ["FastAPI", "Spring Boot", "React"],
+  "databases": ["SQLite", "PostgreSQL", "MongoDB"],
+  "cloud": ["AWS"],
+  "devops": ["Docker", "GitHub Actions"],
+  "tools": ["Git", "VS Code", "Postman"],
+  "certifications": [],
+  "preferred_titles": [
+    "Junior Software Developer",
+    "Graduate Software Engineer",
+    "Backend Developer",
+    "Python Developer"
+  ],
+  "preferred_locations": ["Johannesburg", "Remote"],
+  "remote_preference": "hybrid",
+  "minimum_match_score": 70,
+  "experience_summary": "Final-year Computer Science student with internship experience in backend development. Strong in Python, FastAPI, and SQL.",
+  "skills": [
+    {"name": "Python", "category": "language", "proficiency": "advanced", "years": 3, "evidence": "Coursework, personal projects, and internship"},
+    {"name": "Java", "category": "language", "proficiency": "intermediate", "years": 2, "evidence": "University coursework"},
+    {"name": "JavaScript", "category": "language", "proficiency": "intermediate", "years": 2},
+    {"name": "FastAPI", "category": "framework", "proficiency": "intermediate", "years": 1, "evidence": "JobFlow AI backend"},
+    {"name": "Spring Boot", "category": "framework", "proficiency": "beginner", "years": 1},
+    {"name": "React", "category": "framework", "proficiency": "beginner", "years": 1},
+    {"name": "SQLite", "category": "database", "proficiency": "advanced", "years": 2},
+    {"name": "PostgreSQL", "category": "database", "proficiency": "intermediate", "years": 1},
+    {"name": "Git", "category": "tool", "proficiency": "advanced", "years": 3},
+    {"name": "Docker", "category": "devops", "proficiency": "beginner", "years": 1}
+  ],
+  "projects": [
+    {
+      "name": "JobFlow AI",
+      "description": "Local-first job intelligence and application-preparation automation system. Fetches, normalizes, deduplicates, and scores jobs against a user profile.",
+      "technologies": ["Python", "FastAPI", "SQLite", "SQLAlchemy", "Streamlit"],
+      "role": "Solo developer",
+      "start_date": "2026-10-01"
+    },
+    {
+      "name": "Campus Timetable App",
+      "description": "Web application for students to view and manage their timetables.",
+      "technologies": ["Java", "Spring Boot", "PostgreSQL", "Thymeleaf"],
+      "role": "Backend developer",
+      "start_date": "2025-03-01",
+      "end_date": "2025-11-30"
+    }
+  ]
+}
