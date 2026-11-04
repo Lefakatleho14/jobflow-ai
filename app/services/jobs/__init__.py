@@ -23,6 +23,16 @@ from app.services.jobs.hashing import content_hash
 from app.services.jobs.import_service import ImportResult, JobImportService
 from app.services.jobs.normalizer import normalize_job_fields
 
+from app.services.jobs.requirement_service import (
+    BatchReport,
+    ExtractionResult,
+    RequirementService,
+)
+from app.services.jobs.requirement_schema import (
+    JobRequirementSchema,
+    parse_and_validate,
+)
+
 __all__ = [
     "AliasDecision",
     "FeedFetchResult",
@@ -41,4 +51,9 @@ __all__ = [
     "normalize_job_fields",
     "record_alias",
     "title_similarity",
+    "BatchReport",
+    "ExtractionResult",
+    "JobRequirementSchema",
+    "RequirementService",
+    "parse_and_validate",
 ]
