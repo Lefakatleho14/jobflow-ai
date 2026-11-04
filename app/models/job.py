@@ -38,18 +38,36 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         Index("ix_jobs_status", "status"),
         Index("ix_jobs_date_found", "date_found"),
         Index("ix_jobs_content_hash", "content_hash"),
+        Index("ix_jobs_country", "country"),
+        Index("ix_jobs_availability", "availability_status"),
+        Index("ix_jobs_closing_date", "closing_date"),
     )
 
     external_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     company: Mapped[str] = mapped_column(String(200), nullable=False)
     location: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    
+    # --- New fields in Phase 7.5 ---
+    country: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    employment_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    seniority: Mapped[str | None] = mapped_column(String(50), nullable=True)
+
     remote_status: Mapped[str] = mapped_column(String(20), default="unknown")
     description: Mapped[str] = mapped_column(Text, default="")
     url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     source: Mapped[str] = mapped_column(String(50), default="manual")
+    
     date_found: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     date_posted: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    date_posted_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    
+    closing_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    closing_date_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    
+    availability_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    date_last_verified: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
     status: Mapped[str] = mapped_column(String(20), default="discovered")
     salary_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
     salary_max: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -65,8 +83,7 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     application: Mapped["Application | None"] = relationship(  # noqa: F821
         back_populates="job", uselist=False, cascade="all, delete-orphan"
     )
-
-    aliases: Mapped[list["JobAlias"]] = relationship(
+    aliases: Mapped[list["JobAlias"]] = relationship(  # noqa: F821
         back_populates="job", cascade="all, delete-orphan"
     )
 

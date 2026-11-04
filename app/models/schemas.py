@@ -91,12 +91,20 @@ class JobCreate(BaseModel):
     title: str
     company: str
     location: Optional[str] = None
+    country: Optional[str] = None
+    employment_type: Optional[str] = None
+    seniority: Optional[str] = None
     remote_status: str = "unknown"
     description: str = ""
     url: Optional[str] = None
     source: str = "manual"
     external_id: Optional[str] = None
     date_posted: Optional[datetime] = None
+    date_posted_status: Optional[str] = None
+    closing_date: Optional[datetime] = None
+    closing_date_status: Optional[str] = None
+    availability_status: Optional[str] = None
+    date_last_verified: Optional[datetime] = None
     salary_min: Optional[int] = None
     salary_max: Optional[int] = None
     salary_currency: Optional[str] = None

@@ -16,7 +16,7 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -135,6 +135,9 @@ class JobImportService:
             title=normalized["title"],
             company=normalized["company"],
             location=normalized["location"],
+            country=normalized["country"],
+            employment_type=normalized["employment_type"],
+            seniority=normalized["seniority"],
             remote_status=normalized["remote_status"],
             description=normalized["description"],
             url=normalized["url"],
@@ -147,6 +150,11 @@ class JobImportService:
             salary_max=normalized["salary_max"],
             salary_currency=normalized["salary_currency"],
             content_hash=hash_value,
+            date_posted_status=normalized["date_posted_status"],
+            closing_date=normalized["closing_date"],
+            closing_date_status=normalized["closing_date_status"],
+            availability_status=normalized["availability_status"],
+            date_last_verified=normalized["date_last_verified"],
         )
         self.session.add(job)
         self.session.flush()
